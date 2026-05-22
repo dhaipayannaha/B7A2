@@ -1,6 +1,7 @@
 import { type Request, type Response } from 'express'
 import { issueService } from './issue.service'
 import { userService } from '../User/user.service';
+import sendResponse from '../../utilities/sendResponse';
 
 const createIssue = async (req: Request, res: Response) => {
     try {
@@ -40,16 +41,19 @@ const getAllIssues = async (req:Request, res: Response) => {
             type as string, 
             status as string
         );
-        res.status(200).json({
-        success: true,
-        message:"All issues fetched successfully",
-        data: result.rows
-      })
+        sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "All issues fetched successfully",
+      data: result.rows
+    })
         
     } catch (error: any) {
-        res.status(500).json({
-      message: error.message,
-      error: error
+        sendResponse(res, {
+        statusCode: 500,
+        success: false,
+        message: error.message,
+        error: error
     })
     }
 }
