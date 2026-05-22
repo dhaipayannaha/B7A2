@@ -18,56 +18,57 @@ const createIssue = async (req: Request, res: Response) => {
             type,
             reporter_id
         });
-
-        res.status(201).json({
+        sendResponse(res, {
+            statusCode: 201,
             success: true,
             message: "Issue created successfully",
             data: result
-        });
+        })
     } catch (error: any) {
-        res.status(500).json({
+        sendResponse(res, {
+            statusCode: 500,
             success: false,
             message: error.message,
             error: error
-        });
+        })
     }
 }
 
-const getAllIssues = async (req:Request, res: Response) => {
+const getAllIssues = async (req: Request, res: Response) => {
     try {
         const { sort, type, status } = req.query;
         const result = await issueService.getAllIssuesFromDB(
-            (sort as string) || 'newest', 
-            type as string, 
+            (sort as string) || 'newest',
+            type as string,
             status as string
         );
         sendResponse(res, {
-      statusCode: 200,
-      success: true,
-      message: "All issues fetched successfully",
-      data: result.rows
-    })
-        
+            statusCode: 200,
+            success: true,
+            message: "All issues fetched successfully",
+            data: result.rows
+        })
+
     } catch (error: any) {
         sendResponse(res, {
-        statusCode: 500,
-        success: false,
-        message: error.message,
-        error: error
-    })
+            statusCode: 500,
+            success: false,
+            message: error.message,
+            error: error
+        })
     }
 }
 
-const getSingleIssue = async (req:Request, res: Response) => {
+const getSingleIssue = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         const result = await issueService.getSingleIssueFromDB(Number(id))
 
-         if (result.rows.length === 0) {
-          return res.status(404).json({
-            success: false,
-            message: "Issue not found"
-          })
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "Issue not found"
+            })
         }
 
         const issue = result.rows[0];
@@ -90,23 +91,23 @@ const getSingleIssue = async (req:Request, res: Response) => {
         };
 
         res.status(200).json({
-      success: true,
-      data: formattedIssue
-    })
-        
+            success: true,
+            data: formattedIssue
+        })
+
     } catch (error: any) {
         res.status(500).json({
-      message: error.message,
-      error: error
-    })
+            message: error.message,
+            error: error
+        })
     }
 }
 
-const updateIssue = async (req:Request, res: Response) => {
+const updateIssue = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
         const existingIssueResult = await issueService.getSingleIssueFromDB(Number(id));
-        
+
         if (existingIssueResult.rows.length === 0) {
             return res.status(404).json({
                 success: false,
@@ -115,7 +116,7 @@ const updateIssue = async (req:Request, res: Response) => {
         }
 
         const existingIssue = existingIssueResult.rows[0];
-        
+
         const loggedInUserId = (req as any).user?.id;
         const userRole = (req as any).user?.role;
 
@@ -141,44 +142,44 @@ const updateIssue = async (req:Request, res: Response) => {
             }
         }
 
-        
+
         const result = await issueService.updateIssueInDB(Number(id), req.body);
 
         res.status(200).json({
-      success: true,
-      message: "Issue updated successfully",
-      data: result
-    })
+            success: true,
+            message: "Issue updated successfully",
+            data: result
+        })
     } catch (error: any) {
         res.status(500).json({
-      message: error.message,
-      error: error
-    })
+            message: error.message,
+            error: error
+        })
     }
 }
 
 const deleteIssue = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-    const userRole = (req as any).user?.role;
-    if(userRole !== 'maintainer'){
-        return res.status(403).json({
-            success: false,
-            message: "You are not maintainer to delete this issue"
-        });
-    }
+        const userRole = (req as any).user?.role;
+        if (userRole !== 'maintainer') {
+            return res.status(403).json({
+                success: false,
+                message: "You are not maintainer to delete this issue"
+            });
+        }
 
-    const result = await issueService.deleteIssueFromDB(Number(id));
+        const result = await issueService.deleteIssueFromDB(Number(id));
 
-      res.status(200).json({
-      success: true,
-      message: "Issue deleted successfully"
-    })
+        res.status(200).json({
+            success: true,
+            message: "Issue deleted successfully"
+        })
     } catch (error: any) {
         res.status(500).json({
-      message: error.message,
-      error: error
-    })
+            message: error.message,
+            error: error
+        })
     }
 }
 
