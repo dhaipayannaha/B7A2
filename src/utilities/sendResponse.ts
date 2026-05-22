@@ -1,14 +1,9 @@
 
 
 import type { Response } from 'express';
+import type { TResponse } from './sendResponseinterface';
 
-type TResponse<T> = {
-    statusCode: number,
-    success: boolean,
-    message?: string,
-    data?: T | null ,
-    error?: any
-}
+
 
 const sendResponse = <T>(res: Response, data : TResponse<T>) => {
     res.status(data.statusCode).json({
