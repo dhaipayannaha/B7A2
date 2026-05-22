@@ -65,9 +65,10 @@ const getSingleIssue = async (req: Request, res: Response) => {
         const result = await issueService.getSingleIssueFromDB(Number(id))
 
         if (result.rows.length === 0) {
-            return res.status(404).json({
+            return sendResponse(res, {
+                statusCode: 404,
                 success: false,
-                message: "Issue not found"
+                message: "Issue not found",
             })
         }
 
@@ -90,13 +91,17 @@ const getSingleIssue = async (req: Request, res: Response) => {
             updated_at: issue.updated_at
         };
 
-        res.status(200).json({
+
+        sendResponse(res, {
+            statusCode: 200,
             success: true,
             data: formattedIssue
         })
 
     } catch (error: any) {
-        res.status(500).json({
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
             message: error.message,
             error: error
         })
