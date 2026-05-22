@@ -32,6 +32,7 @@ const loginUserIntoDB = async (payload: {email: string, password: string}) => {
 
     const token = jwt.sign(jwtpayload, config.database.secret as string, {expiresIn: "1d"})
 
+    delete user.password;
     return {token, user};
 }
 

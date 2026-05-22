@@ -50,18 +50,17 @@ const getSingleIssueFromDB = async (id:number) => {
 }
 
 const updateIssueInDB = async (id: number, payload: IIssue) => {
-    const { title, description, type, reporter_id } = payload;
+    const { title, description, type } = payload;
 
     const result = await pool.query(
         `UPDATE issues SET 
         title = COALESCE($1, title), 
         description = COALESCE($2, description), 
         type = COALESCE($3, type), 
-        reporter_id = COALESCE($4, reporter_id), 
         updated_at = NOW()
-        WHERE id = $5 
+        WHERE id = $4 
         RETURNING *`,
-        [title, description, type, reporter_id, id]
+        [title, description, type, id]
     );
 
     return result.rows[0];
