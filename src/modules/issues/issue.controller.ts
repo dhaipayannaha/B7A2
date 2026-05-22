@@ -24,11 +24,11 @@ const createIssue = async (req: Request, res: Response) => {
             message: "Issue created successfully",
             data: result
         })
-    } catch (error: any) {
+    } catch (error) {
         sendResponse(res, {
             statusCode: 500,
             success: false,
-            message: error.message,
+            message: error instanceof Error ? error.message : "An unknown error occurred",
             error: error
         })
     }
@@ -49,11 +49,11 @@ const getAllIssues = async (req: Request, res: Response) => {
             data: result.rows
         })
 
-    } catch (error: any) {
+    } catch (error) {
         sendResponse(res, {
             statusCode: 500,
             success: false,
-            message: error.message,
+            message: error instanceof Error ? error.message : "An unknown error occurred",
             error: error
         })
     }
@@ -98,11 +98,11 @@ const getSingleIssue = async (req: Request, res: Response) => {
             data: formattedIssue
         })
 
-    } catch (error: any) {
+    } catch (error) {
         sendResponse(res, {
             statusCode: 500,
             success: false,
-            message: error.message,
+            message: error instanceof Error ? error.message : "An unknown error occurred",
             error: error
         })
     }
@@ -160,11 +160,11 @@ const updateIssue = async (req: Request, res: Response) => {
             message: "Issue updated successfully",
             data: result
         })
-    } catch (error: any) {
+    } catch (error) {
         sendResponse(res, {
             statusCode: 500,
             success: false,
-            message: error.message,
+            message: error instanceof Error ? error.message : "An unknown error occurred",
             error: error
         })
     }
@@ -189,11 +189,11 @@ const deleteIssue = async (req: Request, res: Response) => {
             success: true,
             message: "Issue deleted successfully"
         })
-    } catch (error: any) {
+    } catch (error) {
         sendResponse(res, {
             statusCode: 500,
             success: false,
-            message: error.message,
+            message: error instanceof Error ? error.message : "An unknown error occurred",
             error: error
         })
     }
