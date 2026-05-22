@@ -114,10 +114,11 @@ const updateIssue = async (req: Request, res: Response) => {
         const existingIssueResult = await issueService.getSingleIssueFromDB(Number(id));
 
         if (existingIssueResult.rows.length === 0) {
-            return res.status(404).json({
+            return sendResponse(res, {
+                statusCode: 404,
                 success: false,
-                message: "Issue not found"
-            });
+                message: 'Issue not found'
+            })
         }
 
         const existingIssue = existingIssueResult.rows[0];
@@ -126,37 +127,43 @@ const updateIssue = async (req: Request, res: Response) => {
         const userRole = (req as any).user?.role;
 
         if (!loggedInUserId) {
-            return res.status(401).json({
+            return sendResponse(res, {
+                statusCode: 401,
                 success: false,
-                message: "Unauthorized"
-            });
+                message: 'Unauthorized'
+            })
         }
 
         if (userRole === 'contributor') {
             if (existingIssue.reporter_id !== loggedInUserId) {
-                return res.status(403).json({
+                return sendResponse(res, {
+                    statusCode: 403,
                     success: false,
-                    message: "You are not authorized to update this issue"
-                });
+                    message: 'You are not authorized to update this issue'
+                })
             }
             if (existingIssue.status !== 'open') {
-                return res.status(403).json({
+                return sendResponse(res, {
+                    statusCode: 403,
                     success: false,
                     message: "You can only update issues with an 'open' status"
-                });
+                })
             }
         }
 
 
         const result = await issueService.updateIssueInDB(Number(id), req.body);
 
-        res.status(200).json({
+        sendResponse(res, {
+            statusCode: 200,
             success: true,
             message: "Issue updated successfully",
             data: result
         })
     } catch (error: any) {
-        res.status(500).json({
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
             message: error.message,
             error: error
         })
@@ -168,25 +175,30 @@ const deleteIssue = async (req: Request, res: Response) => {
     try {
         const userRole = (req as any).user?.role;
         if (userRole !== 'maintainer') {
-            return res.status(403).json({
+            return sendResponse(res, {
+                statusCode: 403,
                 success: false,
                 message: "You are not maintainer to delete this issue"
-            });
+            })
         }
 
         const result = await issueService.deleteIssueFromDB(Number(id));
 
-        res.status(200).json({
+        sendResponse(res, {
+            statusCode: 200,
             success: true,
             message: "Issue deleted successfully"
         })
     } catch (error: any) {
-        res.status(500).json({
+        sendResponse(res, {
+            statusCode: 500,
+            success: false,
             message: error.message,
             error: error
         })
     }
 }
+
 
 export const issueController = {
     createIssue,
