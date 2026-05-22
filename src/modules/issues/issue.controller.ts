@@ -168,8 +168,7 @@ const deleteIssue = async (req: Request, res: Response) => {
 
       res.status(200).json({
       success: true,
-      message: "Issue deleted successfully",
-      data: result
+      message: "Issue deleted successfully"
     })
     } catch (error: any) {
         res.status(500).json({
